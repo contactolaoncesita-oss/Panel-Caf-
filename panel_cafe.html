@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel · Café al Paso</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cafe:#6F4E37;--cafe-d:#4A3220;--cafe-l:#F5EDE4;
+  --arena:#C4A882;--arena-l:#FDF6EE;--arena-d:#8B6F4E;
+  --crema:#F9F3EC;--crema-d:#EDE0D0;
+  --verde:#5A7A5A;--verde-l:#EAF0EA;
+  --red:#C0392B;--red-l:#FEF3F2;
+  --ink:#2C1A0E;--ink2:#5C3D2E;--ink3:#9E7B6B;
+  --bg:#F2EAE0;--white:#FFFAF6;--border:#DDD0C0;
+  --r:12px;--rs:8px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+.header{background:var(--cafe);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:relative}
+.header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--arena)}
+.header-brand .name{font-size:18px;font-weight:800;color:#fff}
+.header-brand .sub{font-size:11px;color:rgba(255,255,255,.65);font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+.btn-refresh{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:inherit}
+.main{padding:16px;max-width:900px;margin:0 auto}
+.date-bar{font-size:13px;color:var(--ink2);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.section-title{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.metrics-grid.four{grid-template-columns:repeat(4,1fr)}
+.metric{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.metric.highlight{border-color:var(--cafe);border-width:2px}
+.metric-lbl{font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.metric-val{font-size:22px;font-weight:800;color:var(--ink);line-height:1}
+.metric-val.cafe{color:var(--cafe-d)}
+.metric-val.verde{color:var(--verde)}
+.metric-val.red{color:var(--red)}
+.metric-val.arena{color:var(--arena-d)}
+.metric-sub{font-size:11px;color:var(--ink3);margin-top:4px}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+.card-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--crema)}
+.card-header-title{font-size:13px;font-weight:700;color:var(--ink)}
+.card-header-sub{font-size:13px;font-weight:800;color:var(--cafe)}
+.venta-row{display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border);gap:12px;transition:background .1s}
+.venta-row:last-child{border-bottom:none}
+.venta-row:hover{background:var(--crema)}
+.venta-hora{font-size:12px;color:var(--ink3);font-family:monospace;min-width:42px}
+.venta-items{flex:1;font-size:13px;color:var(--ink2);line-height:1.4}
+.venta-pago{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.pago-efectivo{background:#FDF6EE;color:#8B6F4E}
+.pago-credito{background:#EAF0EA;color:#5A7A5A}
+.pago-debito{background:#EAF0EA;color:#5A7A5A}
+.pago-transferencia{background:var(--crema-d);color:var(--ink3)}
+.venta-total{font-size:15px;font-weight:800;color:var(--cafe-d);min-width:80px;text-align:right}
+.empty{text-align:center;padding:32px;color:var(--ink3);font-size:13px}
+.empty i{font-size:32px;display:block;margin-bottom:8px;opacity:.3}
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.filter-bar input[type=date]{font-size:13px;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--white);color:var(--ink);font-family:inherit}
+.filter-bar input:focus{outline:none;border-color:var(--cafe)}
+.btn-small{padding:7px 12px;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--ink);font-family:inherit}
+.btn-small.active{background:var(--cafe);color:#fff;border-color:var(--cafe)}
+.loading{text-align:center;padding:40px;color:var(--ink3)}
+.spinner{display:inline-block;width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--cafe);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--rs);font-size:13px;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{background:var(--red)}
+@media(max-width:600px){
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .metrics-grid.four{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <div class="name">☕ Café al Paso</div>
+    <div class="sub">Panel de finanzas</div>
+  </div>
+  <button class="btn-refresh" onclick="cargarTodo()">
+    <i class="ti ti-refresh"></i> Actualizar
+  </button>
+</div>
+
+<div class="main">
+
+  <div class="date-bar">
+    <i class="ti ti-calendar"></i>
+    <span id="fecha-hoy"></span>
+  </div>
+
+  <div class="section-title">Hoy</div>
+  <div class="metrics-grid four">
+    <div class="metric highlight"><div class="metric-lbl">Ventas hoy</div><div class="metric-val cafe" id="m-hoy-total">—</div></div>
+    <div class="metric"><div class="metric-lbl">Pedidos</div><div class="metric-val" id="m-hoy-pedidos">—</div></div>
+    <div class="metric"><div class="metric-lbl">Efectivo</div><div class="metric-val arena" id="m-hoy-efectivo">—</div></div>
+    <div class="metric"><div class="metric-lbl">Tarjeta / Transfer.</div><div class="metric-val arena" id="m-hoy-tarjeta">—</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title">Este mes</div>
+  <div class="metrics-grid">
+    <div class="metric"><div class="metric-lbl">Ingresos</div><div class="metric-val verde" id="m-mes-ingresos">—</div></div>
+    <div class="metric"><div class="metric-lbl">Gastos</div><div class="metric-val red" id="m-mes-gastos">—</div></div>
+    <div class="metric"><div class="metric-lbl">Resultado neto</div><div class="metric-val" id="m-mes-neto">—</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="filter-bar">
+    <span class="section-title" style="margin:0">Ventas del día</span>
+    <input type="date" id="filtro-fecha" onchange="filtrarVentas()">
+    <button class="btn-small active" onclick="setHoy()">Hoy</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-header-title" id="ventas-titulo">Cargando...</span>
+      <span class="card-header-sub" id="ventas-sub"></span>
+    </div>
+    <div id="lista-ventas"><div class="loading"><div class="spinner"></div></div></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw7yVUngQXeuBzxHlmdLfMxZkua_XsPqP4AJPq_KX_24ymVPcXWBOs8OxfsxwzxgQnMfA/exec';
+
+const fmt = n => '$' + Math.round(n||0).toLocaleString('es-CL');
+const pad = n => n < 10 ? '0'+n : ''+n;
+function hoyStr() {
+  const d = new Date();
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+}
+function fechaLabel(iso) {
+  if (!iso) return '—';
+  try {
+    const d = new Date(iso + 'T12:00:00');
+    return d.toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  } catch { return iso; }
+}
+function toast(msg, tipo='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + tipo;
+  setTimeout(() => el.className = 'toast', 3000);
+}
+
+let todasLasVentas = [];
+
+async function cargarTodo() {
+  try {
+    const [r1, r2] = await Promise.all([
+      fetch(SCRIPT_URL + '?action=resumen'),
+      fetch(SCRIPT_URL + '?action=ventas')
+    ]);
+    const d1 = await r1.json();
+    const d2 = await r2.json();
+    if (d1.ok) mostrarResumen(d1.resumen);
+    if (d2.ok) {
+      todasLasVentas = d2.ventas || [];
+      mostrarMetricasHoy();
+      filtrarVentas();
+    }
+  } catch(e) {
+    toast('Error al conectar', 'error');
+  }
+}
+
+function mostrarResumen(r) {
+  document.getElementById('m-mes-ingresos').textContent = fmt(r.ingresos_mes);
+  document.getElementById('m-mes-gastos').textContent   = fmt(r.gastos_mes);
+  const neto = document.getElementById('m-mes-neto');
+  neto.textContent = fmt(r.neto_mes);
+  neto.className = 'metric-val ' + (r.neto_mes >= 0 ? 'verde' : 'red');
+}
+
+function mostrarMetricasHoy() {
+  const hoy = hoyStr();
+  const ventasHoy = todasLasVentas.filter(v => v.fecha === hoy);
+  const totalHoy  = ventasHoy.reduce((s, v) => s + Number(v.total||0), 0);
+  const efectivo  = ventasHoy.filter(v => (v.forma_de_pago||v.formaPago||'').toLowerCase().includes('efectivo'))
+    .reduce((s, v) => s + Number(v.total||0), 0);
+  const tarjeta = totalHoy - efectivo;
+  document.getElementById('m-hoy-total').textContent    = fmt(totalHoy);
+  document.getElementById('m-hoy-pedidos').textContent  = ventasHoy.length;
+  document.getElementById('m-hoy-efectivo').textContent = fmt(efectivo);
+  document.getElementById('m-hoy-tarjeta').textContent  = fmt(tarjeta);
+}
+
+function setHoy() {
+  document.getElementById('filtro-fecha').value = hoyStr();
+  filtrarVentas();
+}
+
+function filtrarVentas() {
+  const fecha = document.getElementById('filtro-fecha').value || hoyStr();
+  const lista = todasLasVentas.filter(v => v.fecha === fecha)
+    .sort((a, b) => (b.hora||'').localeCompare(a.hora||''));
+  const total = lista.reduce((s, v) => s + Number(v.total||0), 0);
+  document.getElementById('ventas-titulo').textContent =
+    lista.length + ' venta' + (lista.length !== 1 ? 's' : '') + ' · ' + fechaLabel(fecha);
+  document.getElementById('ventas-sub').textContent = lista.length ? fmt(total) : '';
+  const el = document.getElementById('lista-ventas');
+  if (!lista.length) {
+    el.innerHTML = '<div class="empty"><i class="ti ti-coffee-off"></i>Sin ventas este día</div>';
+    return;
+  }
+  el.innerHTML = lista.map(v => {
+    const pago = v.forma_de_pago || v.formaPago || '—';
+    const pagoClass = getPagoClass(pago);
+    const items = (v.items || v.items_resumen || '').toString().replace(/,/g, ' · ');
+    return `<div class="venta-row">
+      <span class="venta-hora">${v.hora||'—'}</span>
+      <span class="venta-items">${items||'—'}</span>
+      <span class="venta-pago ${pagoClass}">${pago}</span>
+      <span class="venta-total">${fmt(v.total)}</span>
+    </div>`;
+  }).join('');
+}
+
+function getPagoClass(pago) {
+  if (!pago) return '';
+  const p = pago.toLowerCase();
+  if (p.includes('efectivo')) return 'pago-efectivo';
+  if (p.includes('crédit') || p.includes('credit')) return 'pago-credito';
+  if (p.includes('débit') || p.includes('debit')) return 'pago-debito';
+  return 'pago-transferencia';
+}
+
+document.getElementById('fecha-hoy').textContent = fechaLabel(hoyStr());
+document.getElementById('filtro-fecha').value = hoyStr();
+cargarTodo();
+</script>
+</body>
+</html>
